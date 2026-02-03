@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GenZ Farming</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2f855a">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0fff0;
+      color: #333;
+    }
+    header {
+      background-color: #2f855a;
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 2rem;
+    }
+    .lang-switch {
+      text-align: center;
+      margin: 1rem;
+    }
+    .container {
+      padding: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .section {
+      background: #ffffff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    .section h2 {
+      color: #2f855a;
+      margin-bottom: 1rem;
+    }
+    select, input[type="date"], button {
+      padding: 0.5rem;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-top: 0.5rem;
+    }
+    button {
+      background-color: #2f855a;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    button:hover {
+      background-color: #276749;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    iframe {
+      width: 100%;
+      height: 300px;
+      border: none;
+      margin-top: 1rem;
+    }
+    .buyer {
+      margin-top: 1rem;
+      background: #e6fffa;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    canvas {
+      margin-top: 1rem;
+    }
+    #installBtn {
+      display: none;
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 1000;
+      padding: 0.75rem 1rem;
+      background: #2f855a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      cursor: pointer;
+    }
+    #installBtn:hover { background: #276749 }
+  </style>
+</head>
+<body>
+  <header>🌾 <span data-lang="header">GenZ Farming</span></header>
+  <button id="installBtn">➕ Add to Home Screen</button>
+  <div class="lang-switch">
+    <label for="language">🌐 Language:</label>
+    <select id="language" onchange="switchLanguage()">
+      <option value="en">English</option>
+      <option value="ta">தமிழ்</option>
+    </select>
+  </div>
+  <div class="container">
+
+    <div class="section">
+      <h2>🌱 <span data-lang="seedCounter">Seed Counter</span></h2>
+      <label data-lang="selectSeed" for="seedCount">Select Seed Count:</label>
+      <select id="seedCount">
+        <option value="">-- Select Count --</option>
+        <option value="100">100</option>
+        <option value="200">200</option>
+        <option value="300">300</option>
+      </select>
+    </div>
+
+    <div class="section">
+      <h2>📍 <span data-lang="gps">GPS Tracking</span></h2>
+      <p data-lang="gpsDesc">Real-time GPS coordinates of your farm for efficient monitoring and logistics planning.</p>
+      <ul>
+        <li data-lang="lat">Latitude: 19.4326° N</li>
+        <li data-lang="long">Longitude: 99.1332° W</li>
+        <li data-lang="status">Status: Tracking Active</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>📜 <span data-lang="history">History of Crop</span></h2>
+      <p data-lang="historyDesc">View previously cultivated crops and productivity stats for your land.</p>
+      <canvas id="cropChart"></canvas>
+    </div>
+
+    <div class="section">
+      <h2>🎬 <span data-lang="videoGuide">Video Guide</span></h2>
+      <p data-lang="videoDesc">Watch this video to understand how to track and manage your crops.</p>
+      <iframe src="https://www.youtube.com/embed/4QwKNx4FqH8" allowfullscreen></iframe>
+    </div>
+
+    <div class="section">
+      <h2>📅 <span data-lang="auctionDate">Auction Date</span></h2>
+      <label for="auctionDate" data-lang="selectDate">Select Selling Date:</label>
+      <input type="date" id="auctionDate">
+    </div>
+
+    <div class="section">
+      <h2>📢 <span data-lang="poleAuction">Pole & Auction</span></h2>
+      <p><strong data-lang="auctionStart">Auction Starting Price:</strong> ₹2,000 per quintal</p>
+      <p data-lang="bids">Current bids from buyers:</p>
+      <div class="buyer">
+        <strong data-lang="buyer">Buyer:</strong> Rohan Traders<br/>
+        <strong data-lang="bid">Bid:</strong> ₹2,500 per quintal
+      </div>
+      <div class="buyer">
+        <strong data-lang="buyer">Buyer:</strong> AgriCorp Ltd<br/>
+        <strong data-lang="bid">Bid:</strong> ₹2,650 per quintal
+      </div>
+      <div class="buyer">
+        <strong data-lang="buyer">Buyer:</strong> FarmFresh Co<br/>
+        <strong data-lang="bid">Bid:</strong> ₹2,800 per quintal
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>💳 <span data-lang="paymentDetails">Payment Details</span></h2>
+      <label for="paymentMode" data-lang="selectPayment">Select Payment Mode:</label>
+      <select id="paymentMode">
+        <option value="">-- Select Payment Method --</option>
+        <option value="upi">UPI</option>
+        <option value="bank">Bank Transfer</option>
+        <option value="cash">Cash</option>
+      </select>
+      <button onclick="alert('Payment process initiated (not functional in static mode).')"
+        data-lang="payNow">Pay Now</button>
+    </div>
+
+    <div class="section">
+      <h2>👤 <span data-lang="buyerDetails">Buyer Details</span></h2>
+      <div class="buyer">
+        <strong data-lang="name">Name:</strong> Arjun Mehta<br/>
+        <strong data-lang="company">Company:</strong> FarmDealers Pvt Ltd<br/>
+        <strong data-lang="contact">Contact:</strong> arjun@farmdealers.in<br/>
+        <strong data-lang="phone">Phone:</strong> +91 98765 43210
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🚚 <span data-lang="deliveryDate">Delivery Date</span></h2>
+      <label for="deliveryDate" data-lang="selectDelivery">Select Expected Delivery Date:</label>
+      <input type="date" id="deliveryDate">
+    </div>
+
+  </div>
+
+<script>
+const translations = {
+  ta: {
+    header: "ஜென்Z விவசாயம்",
+    seedCounter: "விதை எண்ணிக்கை",
+    selectSeed: "விதை எண்ணிக்கையை தேர்ந்தெடுக்கவும்:",
+    gps: "ஜிபிஎஸ் கண்காணிப்பு",
+    gpsDesc: "உங்கள் பண்ணையின் இடதசைகளை நேரடி கண்காணிக்கவும்.",
+    lat: "அகலாக்கோணம்: 19.4326° N",
+    long: "நீளாக்கோணம்: 99.1332° W",
+    status: "நிலை: கண்காணிப்பு செயலில் உள்ளது",
+    history: "விவசாய வரலாறு",
+    historyDesc: "முந்தைய பயிர்கள் மற்றும் விளைச்சல் புள்ளிவிவரங்களை காண்க.",
+    videoGuide: "வீடியோ வழிகாட்டி",
+    videoDesc: "பயிர்களை கண்காணிக்க மற்றும் நிர்வகிக்க வீடியோவை பாருங்கள்.",
+    auctionDate: "லேலம் தேதி",
+    selectDate: "விற்பனை தேதியை தேர்வு செய்யவும்:",
+    poleAuction: "தூண் மற்றும் லேலம்",
+    auctionStart: "லேலம் ஆரம்ப விலை:",
+    bids: "வாங்குபவர்களின் தற்போதைய பணிகள்:",
+    buyer: "வாங்குபவர்:",
+    bid: "பணம்:",
+    paymentDetails: "கட்டண விவரங்கள்",
+    selectPayment: "கட்டண முறையைத் தேர்ந்தெடுக்கவும்:",
+    payNow: "இப்போதே செலுத்து",
+    buyerDetails: "வாங்குபவர் விவரங்கள்",
+    name: "பெயர்:",
+    company: "நிறுவனம்:",
+    contact: "தொடர்பு:",
+    phone: "தொலைபேசி:",
+    deliveryDate: "விநியோக தேதி",
+    selectDelivery: "வினியோக தேதியைத் தேர்ந்தெடுக்கவும்:"
+  }
+};
+
+function switchLanguage() {
+  const lang = document.getElementById("language").value;
+  const elements = document.querySelectorAll("[data-lang]");
+  elements.forEach(el => {
+    const key = el.getAttribute("data-lang");
+    el.textContent = (lang === "ta" && translations.ta[key]) ? translations.ta[key] : defaultText[key];
+  });
+}
+
+const defaultText = {};
+window.onload = () => {
+  document.querySelectorAll("[data-lang]").forEach(el => {
+    const key = el.getAttribute("data-lang");
+    defaultText[key] = el.textContent;
+  });
+};
+</script>
+
+<script>
+  const ctx = document.getElementById('cropChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['2022 - Wheat', '2023 - Corn', '2024 - Rice'],
+      datasets: [{
+        label: 'Yield (tons)',
+        data: [8, 10, 7.5],
+        backgroundColor: ['#68D391', '#48BB78', '#38A169']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Crop Yield by Year'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Tons' }
+        }
+      }
+    }
+  });
+</script>
+<script>
+  // Handle Add to Home Screen prompt for Chrome (beforeinstallprompt)
+  let deferredPrompt;
+  const installBtn = document.getElementById('installBtn');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'block';
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    if (choice.outcome === 'accepted') {
+      console.log('User accepted the A2HS prompt');
+    } else {
+      console.log('User dismissed the A2HS prompt');
+    }
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    console.log('PWA was installed');
+    installBtn.style.display = 'none';
+  });
+
+  // Register service worker for offline support
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('Service worker registered.', reg))
+      .catch(err => console.warn('Service worker registration failed:', err));
+  }
+</script>
+</body>
+</html>
